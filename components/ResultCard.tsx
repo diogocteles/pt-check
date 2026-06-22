@@ -1,6 +1,6 @@
 'use client';
 
-import { AnalysisResult, Signal, Confidence, SignalImpact, SignalStrength } from '@/types';
+import { AnalysisResult, Signal, Confidence, SignalImpact, SignalStrength, WebFinding } from '@/types';
 
 interface Props {
   result: AnalysisResult;
@@ -110,6 +110,32 @@ const STRENGTH_BADGE: Record<SignalStrength, { bg: string; text: string }> = {
   weak:     { bg: 'bg-slate-50',  text: 'text-slate-400' },
 };
 
+const RELEVANCE_STYLES = {
+  high:   { dot: 'bg-emerald-500', badge: 'bg-emerald-50 text-emerald-600' },
+  medium: { dot: 'bg-amber-500',   badge: 'bg-amber-50 text-amber-600' },
+  low:    { dot: 'bg-slate-400',   badge: 'bg-slate-100 text-slate-500' },
+};
+
+function WebFindingRow({ finding }: { finding: WebFinding }) {
+  const s = RELEVANCE_STYLES[finding.relevance];
+  return (
+    <li className="flex items-start gap-3 py-3 px-1 rounded-lg hover:bg-slate-50 transition-colors">
+      <span className={`mt-1.5 flex-shrink-0 w-2 h-2 rounded-full ${s.dot}`} />
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2 flex-wrap">
+          <code className="text-xs text-slate-400 font-mono bg-slate-100 px-1.5 py-0.5 rounded truncate max-w-[220px]">
+            {finding.source}
+          </code>
+          <span className={`text-[10px] font-semibold uppercase tracking-wide px-1.5 py-0.5 rounded ${s.badge}`}>
+            {finding.relevance}
+          </span>
+        </div>
+        <p className="mt-1 text-xs text-slate-500 leading-relaxed">{finding.finding}</p>
+      </div>
+    </li>
+  );
+}
+
 function SignalRow({ signal }: { signal: Signal }) {
   const dot = IMPACT_DOT[signal.impact];
   const row = IMPACT_ROW[signal.impact];
@@ -135,7 +161,7 @@ function SignalRow({ signal }: { signal: Signal }) {
 }
 
 export default function ResultCard({ result }: Props) {
-  const { probability, confidence, signals, summary, disclaimer } = result;
+  const { probability, confidence, signals, summary, disclaimer, webFindings } = result;
 
   return (
     <div className="mt-6 w-full max-w-lg flex flex-col gap-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -148,6 +174,24 @@ export default function ResultCard({ result }: Props) {
           {summary}
         </p>
       </div>
+
+      {/* Web evidence card */}
+      {webFindings && webFindings.length > 0 && (
+        <div className="rounded-2xl p-6 bg-white shadow-sm border border-slate-100">
+          <div className="flex items-center gap-2 mb-3">
+            <svg className="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9" />
+            </svg>
+            <h2 className="text-sm font-semibold text-slate-700">Web evidence</h2>
+            <span className="text-xs text-slate-400">{webFindings.length} source{webFindings.length !== 1 ? 's' : ''} found</span>
+          </div>
+          <ul className="flex flex-col divide-y divide-slate-100">
+            {webFindings.map((finding, i) => (
+              <WebFindingRow key={i} finding={finding} />
+            ))}
+          </ul>
+        </div>
+      )}
 
       {/* Signals breakdown card */}
       {signals.length > 0 && (

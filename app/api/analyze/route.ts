@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+
+export const maxDuration = 60;
 import { extractSignals } from '@/lib/signals';
 import { analyzeWithClaude } from '@/lib/claude';
 import { AnalyzeRequest } from '@/types';

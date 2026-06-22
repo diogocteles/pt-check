@@ -11,12 +11,19 @@ export interface Signal {
   category: 'email-tld' | 'email-domain' | 'email-username' | 'name-surname' | 'name-firstname' | 'general';
 }
 
+export interface WebFinding {
+  source: string;
+  finding: string;
+  relevance: 'high' | 'medium' | 'low';
+}
+
 export interface AnalysisResult {
   probability: number;
   confidence: Confidence;
   signals: Signal[];
   summary: string;
   disclaimer: string;
+  webFindings?: WebFinding[];
 }
 
 export interface AnalyzeRequest {

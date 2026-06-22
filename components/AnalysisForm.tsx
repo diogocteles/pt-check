@@ -88,7 +88,7 @@ export default function AnalysisForm({ onAnalyze, loading, onReset }: Props) {
             {loading ? (
               <>
                 <span className="w-3.5 h-3.5 rounded-full border-2 border-white/40 border-t-white animate-spin" />
-                Analysing…
+                Researching…
               </>
             ) : (
               <>
