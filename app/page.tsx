@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import AnalysisForm from '@/components/AnalysisForm';
+import PasswordGate from '@/components/PasswordGate';
 import ResultCard from '@/components/ResultCard';
 import { AnalysisResult } from '@/types';
 
@@ -38,6 +39,7 @@ export default function Home() {
   }
 
   return (
+    <PasswordGate>
     <main className="min-h-screen flex flex-col items-center px-4 py-16 bg-slate-50">
 
       {/* Header */}
@@ -83,5 +85,6 @@ export default function Home() {
         Powered by Claude · For research purposes only
       </footer>
     </main>
+    </PasswordGate>
   );
 }
